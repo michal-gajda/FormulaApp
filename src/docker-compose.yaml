@@ -1,0 +1,18 @@
+version: "3.9"
+x-docker-data: &docker-build
+  build:
+    context: .
+    dockerfile: Dockerfile
+networks:
+  formula-network:
+    driver: bridge
+services:
+  formula-webapi:
+    image: formulaapp:v1
+    container_name: formulaapp
+    <<: *docker-build
+    networks:
+      - formula-network
+    ports:
+      - "127.0.0.1:5080:5080"
+    restart: unless-stopped

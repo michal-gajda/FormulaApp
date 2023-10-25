@@ -1,0 +1,8 @@
+<Project>
+  <PropertyGroup>
+    <Authors>Michal Gajda</Authors>
+    <TargetFramework>net8.0</TargetFramework>
+    <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
+    <ProductName>Bookshelf</ProductName>
+  </PropertyGroup>
+</Project>
