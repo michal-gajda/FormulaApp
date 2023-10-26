@@ -1,4 +1,6 @@
+*.http
 *.md
+*.rest
 bin/
 obj/
 .idea/
@@ -12,4 +14,3 @@ obj/
 .gitignore
 Dockerfile
 docker-compose.yml
-
