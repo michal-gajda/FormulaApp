@@ -1,5 +1,9 @@
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration.AddEnvironmentVariables();
+
+builder.Logging.AddSeq(builder.Configuration.GetSection("Seq"));
+
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -7,11 +11,22 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+app.Lifetime.ApplicationStopping.Register(() =>
+{
+    var logger = app.Services.GetService<ILogger<Program>>();
+    logger?.LogInformation("{Message}", "ApplicationStopping called");
+});
+app.Lifetime.ApplicationStopped.Register(() =>
+{
+    var logger = app.Services.GetService<ILogger<Program>>();
+    logger?.LogInformation("{Message}", "ApplicationStopped called");
+});
+
 // Configure the HTTP request pipeline.
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 
 var summaries = new[]
 {

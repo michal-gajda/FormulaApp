@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: formulaapp
-          image: gajdaltd/formulaapp:v1
+          image: gajdaltd/formulaapp:v3
           ports:
             - containerPort: 5080
               name: http-web-api
@@ -33,12 +33,16 @@ spec:
           env:
             - name: ASPNETCORE_URLS
               value: http://+:5080
+            - name: SEQ__SERVERURL
+              value: http://192.168.1.113:5341
+            - name: SEQ__APIKEY
+              value: l1GosUsS8uqaxo9D3naB
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: my-lb-service
+  name: formula-app-service
 spec:
   selector:
     app.kubernetes.io/name: formula-app
