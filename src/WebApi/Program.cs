@@ -1,8 +1,24 @@
+using Microsoft.AspNetCore.RateLimiting;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddEnvironmentVariables();
 
 builder.Logging.AddSeq(builder.Configuration.GetSection("Seq"));
+
+builder.Services.AddHealthChecks();
+builder.Services.AddHttpLogging(logging =>
+{
+    logging.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.All;
+    logging.CombineLogs = true;
+});
+builder.Services.AddRateLimiter(_ => _
+    .AddConcurrencyLimiter(policyName: "concurrencyPolicy", options =>
+    {
+        options.PermitLimit = 10;
+        options.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+        options.QueueLimit = 10;
+    }));
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -10,6 +26,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+app.MapHealthChecks("/healthz");
+app.UseHttpLogging();
+app.UseRateLimiter();
 
 app.Lifetime.ApplicationStopping.Register(() =>
 {

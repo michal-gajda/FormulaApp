@@ -11,9 +11,10 @@ services:
     image: gajdaltd/formulaapp:v3
     container_name: formulaapp
     <<: *docker-build
+    env_file: .env
     environment:
       SEQ__SERVERURL: "http://host.docker.internal:5341"
-      SEQ__APIKEY: "l1GosUsS8uqaxo9D3naB"
+      SEQ__APIKEY: "${SEQ__APIKEY:-l1GosUsS8uqaxo9D3naB}"
     networks:
       - formula-network
     ports:
@@ -21,3 +22,9 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     restart: unless-stopped
+    healthcheck:
+      test: /usr/bin/curl --fail http://localhost:5080/healthz || exit 1
+      interval: 5s
+      timeout: 10s
+      retries: 3
+      start_period: 10s

@@ -23,6 +23,12 @@ spec:
           ports:
             - containerPort: 5080
               name: http-web-api
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: 5080
+            failureThreshold: 30
+            periodSeconds: 10
           resources:
             requests:
               cpu: 100m
